@@ -199,7 +199,14 @@
         </div>
 
         <div class="insight-box">
-          <h3>💡 La clave de RK2</h3>
+          <h3>
+            <svg class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 18h6"/>
+              <path d="M10 22h4"/>
+              <path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8a6 6 0 0 0-12 0c0 1.33.47 2.48 1.5 3.5.76.76 1.23 1.52 1.41 2.5"/>
+            </svg>
+            La clave de RK2
+          </h3>
           <p>Euler solo mira "hacia adelante" desde el inicio. RK2 corrige usando información del final del paso, ¡por eso es más preciso!</p>
         </div>
       </div>
@@ -209,7 +216,7 @@
     <section id="laboratorio" class="section-dark">
       <div class="container">
         <h1>Laboratorio Interactivo</h1>
-        <p class="subtitle">Experimenta con ambos métodos y compara resultados en tiempo real.</p>
+        <p class="subtitle">Compara resultados en tiempo real.</p>
 
         <div class="lab-layout">
           <!-- Panel de control -->
@@ -224,15 +231,13 @@
               <div class="pvi-info" id="pviDesc"></div>
             </div>
 
-            <div class="control-group">
-              <h3>Modo Explorador</h3>
-              <label class="checkbox-label">
-                <input type="checkbox" id="explorerToggle" />
-                <span>Definir mi propia ecuación</span>
-              </label>
+            <div class="control-group" id="customGroup" style="display: none;">
               <label class="control-label">
-                <span>\(f(t, y) =\)</span>
-                <textarea id="explorerExpr" rows="3" placeholder="Ejemplo: y*(1-y) + sin(t)"></textarea>
+                <div class="label-row">
+                  <span>\(f(t, y) =\)</span>
+                  <span class="error-badge" id="customError" style="display: none;">Ecuación inválida</span>
+                </div>
+                <textarea id="customExpr" rows="3" placeholder="Ejemplo: y*(1-y) + sin(t)"></textarea>
               </label>
               <p class="help-text">Funciones disponibles: sin, cos, exp, log, sqrt, abs, pow. Usa ^ para potencias.</p>
             </div>
@@ -264,13 +269,6 @@
               <p class="help-text">Mueve el slider para ver el efecto del tamaño de paso en tiempo real.</p>
             </div>
 
-            <div class="control-group">
-              <label class="checkbox-label">
-                <input type="checkbox" id="showExact" checked />
-                <span>Mostrar solución exacta</span>
-              </label>
-            </div>
-
             <div class="button-group">
               <button id="runBtn" class="btn btn-primary">Calcular</button>
               <button id="resetBtn" class="btn">Restablecer</button>
@@ -292,60 +290,47 @@
 
           <!-- Resultados -->
           <div class="lab-results">
-            <div class="result-section">
-              <div class="result-header">
-                <h2>Gráfica de Soluciones</h2>
-                <div class="toggles">
-                  <label class="toggle-pill">
-                    <input type="checkbox" id="toggleEuler" checked />
-                    <span>Euler</span>
-                  </label>
-                  <label class="toggle-pill">
-                    <input type="checkbox" id="toggleRK2" checked />
-                    <span>RK2</span>
-                  </label>
-                  <label class="toggle-pill">
-                    <input type="checkbox" id="toggleExact" checked />
-                    <span>Exacta</span>
-                  </label>
-                </div>
-              </div>
+            <!-- Gráfica principal: 2 columnas -->
+            <div class="result-section main-chart">
+              <h2>Gráfica de Soluciones</h2>
               <div class="chart-container">
                 <canvas id="chart"></canvas>
               </div>
             </div>
 
-            <div class="result-section">
-              <h2>Gráfica de Errores Absolutos</h2>
+            <!-- Errores: columna izquierda -->
+            <div class="result-section error-chart">
+              <h2>Errores Absolutos</h2>
               <div class="chart-container small">
                 <canvas id="errorChart"></canvas>
               </div>
-              <p class="help-text">Muestra \(|y_{numérica} - y_{exacta}|\) en cada punto.</p>
             </div>
 
-            <div class="result-section">
+            <!-- Métricas: columna derecha -->
+            <div class="result-section metrics">
               <h2>Métricas de Error</h2>
               <div class="metrics-grid">
                 <div class="metric-card euler">
-                  <div class="metric-label">Euler - Error Máximo</div>
+                  <div class="metric-label">Euler - Max</div>
                   <div class="metric-value" id="eulerMax">—</div>
                 </div>
                 <div class="metric-card euler">
-                  <div class="metric-label">Euler - Error RMS</div>
+                  <div class="metric-label">Euler - RMS</div>
                   <div class="metric-value" id="eulerRms">—</div>
                 </div>
                 <div class="metric-card rk2">
-                  <div class="metric-label">RK2 - Error Máximo</div>
+                  <div class="metric-label">RK2 - Max</div>
                   <div class="metric-value" id="rk2Max">—</div>
                 </div>
                 <div class="metric-card rk2">
-                  <div class="metric-label">RK2 - Error RMS</div>
+                  <div class="metric-label">RK2 - RMS</div>
                   <div class="metric-value" id="rk2Rms">—</div>
                 </div>
               </div>
             </div>
 
-            <div class="result-section">
+            <!-- Coste: 2 columnas abajo -->
+            <div class="result-section cost">
               <h2>Coste Computacional</h2>
               <div class="cost-grid">
                 <div class="cost-card">
@@ -395,11 +380,6 @@
             <div class="cell good">1</div>
             <div class="cell neutral">2</div>
           </div>
-          <div class="table-row">
-            <div class="row-label">Uso recomendado</div>
-            <div class="cell">Prototipos, aprendizaje</div>
-            <div class="cell">Aplicaciones reales</div>
-          </div>
         </div>
 
         <div class="two-cols">
@@ -424,7 +404,13 @@
         </div>
 
         <div class="key-insight">
-          <h2>Lección clave</h2>
+          <div class="insight-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 18h6"/>
+              <path d="M10 22h4"/>
+              <path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8a6 6 0 0 0-12 0c0 1.33.47 2.48 1.5 3.5.76.76 1.23 1.52 1.41 2.5"/>
+            </svg>
+          </div>
           <p>RK2 requiere el doble de evaluaciones por paso, pero su error es \(\mathcal{O}(h^2)\) en vez de \(\mathcal{O}(h)\).</p>
           <p><strong>En la práctica:</strong> Para lograr la misma precisión, RK2 necesita menos pasos totales que Euler, ¡compensando el coste extra por paso!</p>
         </div>
@@ -434,8 +420,7 @@
 
   <footer class="footer">
     <div class="container">
-      <p>Guía interactiva de métodos numéricos para PVI</p>
-      <p class="muted">Euler vs RK2 — Material educativo</p>
+      <p>Grupo 9 - Análisis Numérico S33 - 2025</p>
     </div>
   </footer>
 

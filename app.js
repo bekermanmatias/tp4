@@ -177,6 +177,11 @@
       opt.textContent = p.name;
       sel.appendChild(opt);
     }
+    // Opción personalizada
+    const optCustom = document.createElement('option');
+    optCustom.value = 'custom';
+    optCustom.textContent = 'Personalizado';
+    sel.appendChild(optCustom);
   }
 
   function loadDefaults(pvi) {
@@ -184,10 +189,6 @@
     $('tf').value = pvi.defaults.tf;
     $('y0').value = pvi.defaults.y0;
     $('hRange').value = pvi.defaults.h;
-    $('showExact').checked = true;
-    $('toggleEuler').checked = true;
-    $('toggleRK2').checked = true;
-    $('toggleExact').checked = true;
     $('pviDesc').textContent = pvi.desc;
     syncNumberFromRange();
     renderMath();
@@ -195,6 +196,17 @@
 
   function getSelectedPvi() {
     const id = $('pviSelect').value;
+    if (id === 'custom') {
+      return {
+        id: 'custom',
+        name: 'Personalizado',
+        // f se definirá desde la expresión del usuario en run()
+        f: (t, y) => y,
+        exact: null,
+        defaults: { t0: 0, tf: 2, y0: 1, h: 0.2 },
+        desc: 'Define tu propia ecuación f(t, y). La solución exacta se desactiva.'
+      };
+    }
     return PVIS.find((p) => p.id === id) || PVIS[0];
   }
 
@@ -210,7 +222,7 @@
     return { pvi, t0: a, tf: b, y0, h, n };
   }
 
-  // Explorador: parsear f(t,y) de una expresión segura
+  // Parsear f(t,y) de una expresión segura (usado para modo personalizado)
   function buildExplorerFunction(expr) {
     if (!expr || !expr.trim()) return null;
     // Normalizar ^ a **
@@ -282,12 +294,10 @@
   }
 
   function updateChart({ t, eulerY, rk2Y, exactY }) {
-    const showEuler = $('toggleEuler').checked;
-    const showRK2 = $('toggleRK2').checked;
-    const showExact = $('toggleExact').checked && $('showExact').checked && !!exactY;
-
     const datasets = [];
-    if (showExact && exactY) {
+    
+    // Siempre mostrar Exacta si existe
+    if (exactY) {
       datasets.push({
         label: 'Exacta',
         data: exactY,
@@ -297,27 +307,27 @@
         tension: 0.15,
       });
     }
-    if (showEuler) {
-      datasets.push({
-        label: 'Euler',
-        data: eulerY,
-        borderColor: '#6aa4ff',
-        backgroundColor: 'rgba(106,164,255,0.15)',
-        borderDash: [4, 3],
-        borderWidth: 2,
-        tension: 0.15,
-      });
-    }
-    if (showRK2) {
-      datasets.push({
-        label: 'RK2',
-        data: rk2Y,
-        borderColor: '#ffd166',
-        backgroundColor: 'rgba(255,209,102,0.15)',
-        borderWidth: 2,
-        tension: 0.15,
-      });
-    }
+    
+    // Siempre mostrar Euler
+    datasets.push({
+      label: 'Euler',
+      data: eulerY,
+      borderColor: '#6aa4ff',
+      backgroundColor: 'rgba(106,164,255,0.15)',
+      borderDash: [4, 3],
+      borderWidth: 2,
+      tension: 0.15,
+    });
+    
+    // Siempre mostrar RK2
+    datasets.push({
+      label: 'RK2',
+      data: rk2Y,
+      borderColor: '#ffd166',
+      backgroundColor: 'rgba(255,209,102,0.15)',
+      borderWidth: 2,
+      tension: 0.15,
+    });
 
     const c = ensureChart();
     c.data.labels = t.map((v) => round6(v));
@@ -388,16 +398,26 @@
 
   function run() {
     const { pvi, t0, tf, y0, h, n } = readParams();
-    let useExact = $('showExact').checked;
+    let useExact = !!pvi.exact;
     let fImpl = pvi.f;
-    if ($('explorerToggle').checked) {
-      const expr = $('explorerExpr').value;
+    if (pvi.id === 'custom') {
+      const expr = $('customExpr').value;
       const fUser = buildExplorerFunction(expr);
-      if (fUser) {
-        fImpl = fUser;
-        useExact = false;
-        $('toggleExact').checked = false;
+      if (!fUser) {
+        // Mostrar error y no actualizar resultados
+        const err = $('customError');
+        if (err) err.style.display = 'block';
+        const ta = $('customExpr');
+        if (ta) ta.style.borderColor = '#ff8a8a';
+        return;
       }
+      // Limpiar error si existe
+      const err = $('customError');
+      if (err) err.style.display = 'none';
+      const ta = $('customExpr');
+      if (ta) ta.style.borderColor = '';
+      fImpl = fUser;
+      useExact = false;
     }
     const solverParams = { f: fImpl, t0, y0, h, n };
     const eul = euler(solverParams);
@@ -417,19 +437,27 @@
   }
 
   function wireEvents() {
-    $('pviSelect').addEventListener('change', () => { loadDefaults(getSelectedPvi()); run(); });
+    $('pviSelect').addEventListener('change', () => {
+      const pvi = getSelectedPvi();
+      // Mostrar/ocultar grupo personalizado y manejar exacta
+      const isCustom = pvi.id === 'custom';
+      const cg = $('customGroup');
+      if (cg) cg.style.display = isCustom ? 'block' : 'none';
+      // Limpiar mensajes/estilos al cambiar selección
+      const err = $('customError');
+      if (err) err.style.display = 'none';
+      const ta = $('customExpr');
+      if (ta) ta.style.borderColor = '';
+      loadDefaults(pvi);
+      run();
+    });
     $('t0').addEventListener('change', run);
     $('tf').addEventListener('change', run);
     $('y0').addEventListener('change', run);
     $('hRange').addEventListener('input', () => { syncNumberFromRange(); run(); });
-    $('showExact').addEventListener('change', run);
-    $('explorerToggle').addEventListener('change', () => { const on = $('explorerToggle').checked; $('pviSelect').disabled = on; $('showExact').disabled = on; run(); });
-    $('explorerExpr').addEventListener('input', () => { if ($('explorerToggle').checked) run(); });
+    $('customExpr').addEventListener('input', () => { if (getSelectedPvi().id === 'custom') run(); });
     $('runBtn').addEventListener('click', run);
     $('resetBtn').addEventListener('click', reset);
-    $('toggleEuler').addEventListener('change', run);
-    $('toggleRK2').addEventListener('change', run);
-    $('toggleExact').addEventListener('change', run);
 
     $('animPlay').addEventListener('click', () => { startAnimation(); });
     $('animPause').addEventListener('click', () => { stopAnimation(); });
@@ -484,6 +512,40 @@
   } else {
     init();
   }
+
+  // Hide/Show header on scroll
+  let lastScrollY = window.scrollY;
+  let ticking = false;
+
+  function updateHeader() {
+    const header = document.querySelector('.site-header');
+    if (!header) return;
+
+    const currentScrollY = window.scrollY;
+
+    if (currentScrollY < 100) {
+      // Siempre mostrar en la parte superior
+      header.classList.remove('hidden');
+    } else if (currentScrollY > lastScrollY) {
+      // Scrolling down - ocultar
+      header.classList.add('hidden');
+    } else {
+      // Scrolling up - mostrar
+      header.classList.remove('hidden');
+    }
+
+    lastScrollY = currentScrollY;
+    ticking = false;
+  }
+
+  function onScroll() {
+    if (!ticking) {
+      window.requestAnimationFrame(updateHeader);
+      ticking = true;
+    }
+  }
+
+  window.addEventListener('scroll', onScroll, { passive: true });
 })();
 
 
