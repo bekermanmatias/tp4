@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Métodos Numéricos: Euler vs RK2 - Guía Interactiva</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container nav">
+      <div class="brand">Métodos Numéricos para PVI</div>
+      <nav class="menu" aria-label="Secciones">
+        <a href="#problema">El Problema</a>
+        <a href="#euler">Euler</a>
+        <a href="#rk2">RK2</a>
+        <a href="#laboratorio">Laboratorio</a>
+        <a href="#conclusiones">Conclusiones</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- SECCIÓN 1: EL PROBLEMA -->
+    <section id="problema" class="hero">
+      <div class="container">
+        <h1>¿Qué es un Problema de Valor Inicial?</h1>
+        <div class="content-block">
+          <p class="lead">Un <strong>Problema de Valor Inicial (PVI)</strong> consiste en encontrar una función \(y(t)\) que satisface:</p>
+          <div class="formula-box">
+            \[ y'(t) = f(t, y) \quad \text{con} \quad y(t_0) = y_0 \]
+          </div>
+          <p>Es decir, conocemos la <em>derivada</em> de \(y\) en cada punto y queremos encontrar la función \(y(t)\) completa.</p>
+        </div>
+
+        <div class="example-box">
+          <h3>Ejemplo simple</h3>
+          <p>Si \(y' = y\) con \(y(0) = 1\), la solución exacta es \(y(t) = e^t\).</p>
+          <p class="muted">Pero muchos PVI no tienen solución exacta conocida, ¡por eso necesitamos métodos numéricos!</p>
+        </div>
+
+        <div class="two-cols">
+          <div class="info-card">
+            <h3>¿Por qué son importantes?</h3>
+            <ul>
+              <li>Modelan crecimiento poblacional</li>
+              <li>Describen movimiento de objetos</li>
+              <li>Predicen reacciones químicas</li>
+              <li>Simulan sistemas eléctricos</li>
+            </ul>
+          </div>
+          <div class="info-card">
+            <h3>El desafío</h3>
+            <p>Solo conocemos el punto inicial \((t_0, y_0)\) y la regla \(f(t,y)\) que nos dice cómo crece.</p>
+            <p><strong>Solución:</strong> Avanzar paso a paso con \(h\) pequeño, aproximando la curva.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN 2: MÉTODO DE EULER -->
+    <section id="euler" class="section-light">
+      <div class="container">
+        <h1>Método de Euler</h1>
+        <p class="subtitle">El método más simple: avanzar en línea recta con la pendiente actual.</p>
+
+        <div class="method-explanation">
+          <div class="step-card">
+            <div class="step-number">1</div>
+            <div class="step-content">
+              <h3>Punto de partida</h3>
+              <p>Comenzamos en \((t_0, y_0)\).</p>
+            </div>
+          </div>
+
+          <div class="step-card">
+            <div class="step-number">2</div>
+            <div class="step-content">
+              <h3>Calcular pendiente</h3>
+              <p>La pendiente en ese punto es: \(k_1 = f(t_0, y_0)\)</p>
+            </div>
+          </div>
+
+          <div class="step-card">
+            <div class="step-number">3</div>
+            <div class="step-content">
+              <h3>Avanzar en línea recta</h3>
+              <p>Nos movemos una distancia \(h\): \(y_1 = y_0 + h \cdot k_1\)</p>
+            </div>
+          </div>
+
+          <div class="step-card">
+            <div class="step-number">4</div>
+            <div class="step-content">
+              <h3>Repetir</h3>
+              <p>Desde el nuevo punto, volvemos al paso 2.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="formula-highlight">
+          <h3>Fórmula de Euler</h3>
+          \[ y_{k+1} = y_k + h \cdot f(t_k, y_k) \]
+          <p class="muted">Donde \(h\) es el tamaño del paso.</p>
+        </div>
+
+        <div class="pros-cons">
+          <div class="pros">
+            <h4>✓ Ventajas</h4>
+            <ul>
+              <li>Muy fácil de entender</li>
+              <li>Rápido de calcular (1 evaluación por paso)</li>
+              <li>Poco código</li>
+            </ul>
+          </div>
+          <div class="cons">
+            <h4>✗ Desventajas</h4>
+            <ul>
+              <li>Error acumulado grande</li>
+              <li>Orden 1: \(\mathcal{O}(h)\)</li>
+              <li>Necesita \(h\) muy pequeño para precisión</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN 3: MÉTODO RK2 -->
+    <section id="rk2" class="section-light">
+      <div class="container">
+        <h1>Método de Runge-Kutta de orden 2 (RK2)</h1>
+        <p class="subtitle">Más preciso: promedia la pendiente al inicio y al final del paso.</p>
+
+        <div class="method-explanation">
+          <div class="step-card">
+            <div class="step-number">1</div>
+            <div class="step-content">
+              <h3>Pendiente inicial</h3>
+              <p>Igual que Euler: \(k_1 = f(t_k, y_k)\)</p>
+            </div>
+          </div>
+
+          <div class="step-card">
+            <div class="step-number">2</div>
+            <div class="step-content">
+              <h3>Predicción al final</h3>
+              <p>Usamos Euler para predecir: \(\tilde{y} = y_k + h \cdot k_1\)</p>
+            </div>
+          </div>
+
+          <div class="step-card">
+            <div class="step-number">3</div>
+            <div class="step-content">
+              <h3>Pendiente al final</h3>
+              <p>Calculamos: \(k_2 = f(t_k + h, \tilde{y})\)</p>
+            </div>
+          </div>
+
+          <div class="step-card">
+            <div class="step-number">4</div>
+            <div class="step-content">
+              <h3>Promedio de pendientes</h3>
+              <p>Usamos el promedio: \(y_{k+1} = y_k + \tfrac{h}{2}(k_1 + k_2)\)</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="formula-highlight">
+          <h3>Fórmulas de RK2</h3>
+          \[ k_1 = f(t_k, y_k) \]
+          \[ k_2 = f(t_k + h, y_k + h \cdot k_1) \]
+          \[ y_{k+1} = y_k + \frac{h}{2}(k_1 + k_2) \]
+        </div>
+
+        <div class="pros-cons">
+          <div class="pros">
+            <h4>✓ Ventajas</h4>
+            <ul>
+              <li>Mucho más preciso que Euler</li>
+              <li>Orden 2: \(\mathcal{O}(h^2)\)</li>
+              <li>Buen balance precisión/coste</li>
+            </ul>
+          </div>
+          <div class="cons">
+            <h4>✗ Desventajas</h4>
+            <ul>
+              <li>Más complejo que Euler</li>
+              <li>2 evaluaciones de \(f\) por paso</li>
+              <li>Doble coste computacional</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="insight-box">
+          <h3>💡 La clave de RK2</h3>
+          <p>Euler solo mira "hacia adelante" desde el inicio. RK2 corrige usando información del final del paso, ¡por eso es más preciso!</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN 4: LABORATORIO INTERACTIVO -->
+    <section id="laboratorio" class="section-dark">
+      <div class="container">
+        <h1>Laboratorio Interactivo</h1>
+        <p class="subtitle">Experimenta con ambos métodos y compara resultados en tiempo real.</p>
+
+        <div class="lab-layout">
+          <!-- Panel de control -->
+          <div class="lab-controls">
+            <h2>Configuración</h2>
+            
+            <div class="control-group">
+              <label class="control-label">
+                <span>Problema de ejemplo</span>
+                <select id="pviSelect" class="control-input"></select>
+              </label>
+              <div class="pvi-info" id="pviDesc"></div>
+            </div>
+
+            <div class="control-group">
+              <h3>Modo Explorador</h3>
+              <label class="checkbox-label">
+                <input type="checkbox" id="explorerToggle" />
+                <span>Definir mi propia ecuación</span>
+              </label>
+              <label class="control-label">
+                <span>\(f(t, y) =\)</span>
+                <textarea id="explorerExpr" rows="3" placeholder="Ejemplo: y*(1-y) + sin(t)"></textarea>
+              </label>
+              <p class="help-text">Funciones disponibles: sin, cos, exp, log, sqrt, abs, pow. Usa ^ para potencias.</p>
+            </div>
+
+            <div class="control-group">
+              <h3>Intervalo y condición inicial</h3>
+              <div class="input-row">
+                <label class="control-label">
+                  <span>\(t_0\)</span>
+                  <input type="number" id="t0" step="any" class="control-input" />
+                </label>
+                <label class="control-label">
+                  <span>\(t_f\)</span>
+                  <input type="number" id="tf" step="any" class="control-input" />
+                </label>
+                <label class="control-label">
+                  <span>\(y_0\)</span>
+                  <input type="number" id="y0" step="any" class="control-input" />
+                </label>
+              </div>
+            </div>
+
+            <div class="control-group">
+              <h3>Tamaño de paso</h3>
+              <label class="control-label">
+                <span>h = <span id="hVal" class="value-badge">0.1</span></span>
+                <input type="range" id="hRange" min="0.01" max="1" step="0.01" class="slider" />
+              </label>
+              <p class="help-text">Mueve el slider para ver el efecto del tamaño de paso en tiempo real.</p>
+            </div>
+
+            <div class="control-group">
+              <label class="checkbox-label">
+                <input type="checkbox" id="showExact" checked />
+                <span>Mostrar solución exacta</span>
+              </label>
+            </div>
+
+            <div class="button-group">
+              <button id="runBtn" class="btn btn-primary">Calcular</button>
+              <button id="resetBtn" class="btn">Restablecer</button>
+            </div>
+
+            <div class="control-group">
+              <h3>Animación</h3>
+              <div class="button-group">
+                <button id="animPlay" class="btn btn-small">▶ Play</button>
+                <button id="animPause" class="btn btn-small">⏸ Pausa</button>
+                <button id="animReset" class="btn btn-small">⟲ Reiniciar</button>
+              </div>
+              <label class="control-label">
+                <span>Velocidad</span>
+                <input type="range" id="animSpeed" min="0.25" max="2" step="0.25" value="1" class="slider" />
+              </label>
+            </div>
+          </div>
+
+          <!-- Resultados -->
+          <div class="lab-results">
+            <div class="result-section">
+              <div class="result-header">
+                <h2>Gráfica de Soluciones</h2>
+                <div class="toggles">
+                  <label class="toggle-pill">
+                    <input type="checkbox" id="toggleEuler" checked />
+                    <span>Euler</span>
+                  </label>
+                  <label class="toggle-pill">
+                    <input type="checkbox" id="toggleRK2" checked />
+                    <span>RK2</span>
+                  </label>
+                  <label class="toggle-pill">
+                    <input type="checkbox" id="toggleExact" checked />
+                    <span>Exacta</span>
+                  </label>
+                </div>
+              </div>
+              <div class="chart-container">
+                <canvas id="chart"></canvas>
+              </div>
+            </div>
+
+            <div class="result-section">
+              <h2>Gráfica de Errores Absolutos</h2>
+              <div class="chart-container small">
+                <canvas id="errorChart"></canvas>
+              </div>
+              <p class="help-text">Muestra \(|y_{numérica} - y_{exacta}|\) en cada punto.</p>
+            </div>
+
+            <div class="result-section">
+              <h2>Métricas de Error</h2>
+              <div class="metrics-grid">
+                <div class="metric-card euler">
+                  <div class="metric-label">Euler - Error Máximo</div>
+                  <div class="metric-value" id="eulerMax">—</div>
+                </div>
+                <div class="metric-card euler">
+                  <div class="metric-label">Euler - Error RMS</div>
+                  <div class="metric-value" id="eulerRms">—</div>
+                </div>
+                <div class="metric-card rk2">
+                  <div class="metric-label">RK2 - Error Máximo</div>
+                  <div class="metric-value" id="rk2Max">—</div>
+                </div>
+                <div class="metric-card rk2">
+                  <div class="metric-label">RK2 - Error RMS</div>
+                  <div class="metric-value" id="rk2Rms">—</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="result-section">
+              <h2>Coste Computacional</h2>
+              <div class="cost-grid">
+                <div class="cost-card">
+                  <div class="cost-label">Número de pasos</div>
+                  <div class="cost-value" id="costSteps">—</div>
+                </div>
+                <div class="cost-card">
+                  <div class="cost-label">Evaluaciones f - Euler</div>
+                  <div class="cost-value" id="costEuler">—</div>
+                </div>
+                <div class="cost-card">
+                  <div class="cost-label">Evaluaciones f - RK2</div>
+                  <div class="cost-value" id="costRK2">—</div>
+                  <div class="cost-note">×2 por paso</div>
+                </div>
+              </div>
+              <p class="info-text" id="stepsInfo"></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN 5: CONCLUSIONES -->
+    <section id="conclusiones" class="section-light">
+      <div class="container">
+        <h1>Conclusiones y Recomendaciones</h1>
+
+        <div class="comparison-table">
+          <div class="table-header">
+            <div></div>
+            <div>Euler</div>
+            <div>RK2</div>
+          </div>
+          <div class="table-row">
+            <div class="row-label">Complejidad</div>
+            <div class="cell good">Muy simple</div>
+            <div class="cell neutral">Moderada</div>
+          </div>
+          <div class="table-row">
+            <div class="row-label">Precisión</div>
+            <div class="cell bad">Baja (\(\mathcal{O}(h)\))</div>
+            <div class="cell good">Alta (\(\mathcal{O}(h^2)\))</div>
+          </div>
+          <div class="table-row">
+            <div class="row-label">Evaluaciones por paso</div>
+            <div class="cell good">1</div>
+            <div class="cell neutral">2</div>
+          </div>
+          <div class="table-row">
+            <div class="row-label">Uso recomendado</div>
+            <div class="cell">Prototipos, aprendizaje</div>
+            <div class="cell">Aplicaciones reales</div>
+          </div>
+        </div>
+
+        <div class="two-cols">
+          <div class="recommendation">
+            <h3>Usa Euler cuando:</h3>
+            <ul>
+              <li>Estás aprendiendo métodos numéricos</li>
+              <li>Necesitas un prototipo rápido</li>
+              <li>El problema es muy simple</li>
+              <li>La precisión no es crítica</li>
+            </ul>
+          </div>
+          <div class="recommendation">
+            <h3>Usa RK2 cuando:</h3>
+            <ul>
+              <li>Necesitas resultados confiables</li>
+              <li>Quieres menos pasos para misma precisión</li>
+              <li>El coste de evaluar \(f\) es bajo</li>
+              <li>Es una aplicación real</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="key-insight">
+          <h2>Lección clave</h2>
+          <p>RK2 requiere el doble de evaluaciones por paso, pero su error es \(\mathcal{O}(h^2)\) en vez de \(\mathcal{O}(h)\).</p>
+          <p><strong>En la práctica:</strong> Para lograr la misma precisión, RK2 necesita menos pasos totales que Euler, ¡compensando el coste extra por paso!</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>Guía interactiva de métodos numéricos para PVI</p>
+      <p class="muted">Euler vs RK2 — Material educativo</p>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
