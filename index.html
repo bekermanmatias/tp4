@@ -240,6 +240,15 @@
                 <textarea id="customExpr" rows="3" placeholder="Ejemplo: y*(1-y) + sin(t)"></textarea>
               </label>
               <p class="help-text">Funciones disponibles: sin, cos, exp, log, sqrt, abs, pow. Usa ^ para potencias.</p>
+              
+              <label class="control-label">
+                <div class="label-row">
+                  <span>\(y(t) =\) (opcional)</span>
+                  <span class="error-badge" id="exactError" style="display: none;">Solución inválida</span>
+                </div>
+                <textarea id="customExact" rows="2" placeholder="Ejemplo: 1/(1-0.2*t) (deja vacío si no conoces la solución)"></textarea>
+              </label>
+              <p class="help-text">Variables: t, y0 (condición inicial), t0 (tiempo inicial).</p>
             </div>
 
             <div class="control-group">

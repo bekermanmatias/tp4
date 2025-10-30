@@ -204,7 +204,7 @@
         f: (t, y) => y,
         exact: null,
         defaults: { t0: 0, tf: 2, y0: 1, h: 0.2 },
-        desc: 'Define tu propia ecuación f(t, y). La solución exacta se desactiva.'
+        desc: 'Define tu propia ecuación f(t, y). Opcionalmente, agrega la solución exacta y(t).'
       };
     }
     return PVIS.find((p) => p.id === id) || PVIS[0];
@@ -241,6 +241,29 @@
       }
       return (t, y) => {
         const v = fn(t, y);
+        return Number(v);
+      };
+    } catch (e) {
+      return null;
+    }
+  }
+
+  // Parsear y(t) solución exacta (variables: t, y0, t0)
+  function buildExactFunction(expr) {
+    if (!expr || !expr.trim()) return null;
+    let source = expr.replace(/\^/g, '**');
+    const ok = /^[0-9t y0+*\-\/%^()\[\]{}.,!?<>=|&:;\n\r\t\\A-Za-z]*$/.test(source);
+    if (!ok) return null;
+    try {
+      // eslint-disable-next-line no-new-func
+      const fn = new Function('t', 'params', 'with (Math) { const y0 = params.y0; const t0 = params.t0; return (' + source + '); }');
+      // Probar
+      const test = fn(1, { y0: 1, t0: 0 });
+      if (!isFinite(test)) {
+        // Permitir pero puede haber problemas
+      }
+      return (t, params) => {
+        const v = fn(t, params);
         return Number(v);
       };
     } catch (e) {
@@ -399,7 +422,9 @@
   function run() {
     const { pvi, t0, tf, y0, h, n } = readParams();
     let useExact = !!pvi.exact;
+    let exactFunc = pvi.exact;
     let fImpl = pvi.f;
+    
     if (pvi.id === 'custom') {
       const expr = $('customExpr').value;
       const fUser = buildExplorerFunction(expr);
@@ -417,12 +442,43 @@
       const ta = $('customExpr');
       if (ta) ta.style.borderColor = '';
       fImpl = fUser;
-      useExact = false;
+      
+      // Intentar parsear solución exacta personalizada
+      const exactExpr = $('customExact').value;
+      if (exactExpr && exactExpr.trim()) {
+        const exactUser = buildExactFunction(exactExpr);
+        if (!exactUser) {
+          // Mostrar error en solución exacta
+          const errExact = $('exactError');
+          if (errExact) errExact.style.display = 'block';
+          const taExact = $('customExact');
+          if (taExact) taExact.style.borderColor = '#ff8a8a';
+          useExact = false;
+          exactFunc = null;
+        } else {
+          // Limpiar error
+          const errExact = $('exactError');
+          if (errExact) errExact.style.display = 'none';
+          const taExact = $('customExact');
+          if (taExact) taExact.style.borderColor = '';
+          useExact = true;
+          exactFunc = exactUser;
+        }
+      } else {
+        // No hay solución exacta - limpiar errores
+        const errExact = $('exactError');
+        if (errExact) errExact.style.display = 'none';
+        const taExact = $('customExact');
+        if (taExact) taExact.style.borderColor = '';
+        useExact = false;
+        exactFunc = null;
+      }
     }
+    
     const solverParams = { f: fImpl, t0, y0, h, n };
     const eul = euler(solverParams);
     const rk = rk2(solverParams);
-    const exactY = useExact ? computeExactSeries(pvi.exact, eul.t, { y0, t0 }) : null;
+    const exactY = useExact && exactFunc ? computeExactSeries(exactFunc, eul.t, { y0, t0 }) : null;
 
     animData = { t: eul.t, eulerY: eul.y, rk2Y: rk.y, exactY, n, h };
     resetAnimation();
@@ -448,6 +504,10 @@
       if (err) err.style.display = 'none';
       const ta = $('customExpr');
       if (ta) ta.style.borderColor = '';
+      const errExact = $('exactError');
+      if (errExact) errExact.style.display = 'none';
+      const taExact = $('customExact');
+      if (taExact) taExact.style.borderColor = '';
       loadDefaults(pvi);
       run();
     });
@@ -456,6 +516,7 @@
     $('y0').addEventListener('change', run);
     $('hRange').addEventListener('input', () => { syncNumberFromRange(); run(); });
     $('customExpr').addEventListener('input', () => { if (getSelectedPvi().id === 'custom') run(); });
+    $('customExact').addEventListener('input', () => { if (getSelectedPvi().id === 'custom') run(); });
     $('runBtn').addEventListener('click', run);
     $('resetBtn').addEventListener('click', reset);
 
