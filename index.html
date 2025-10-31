@@ -252,25 +252,25 @@
             </div>
 
             <div class="control-group">
-              <h3>Intervalo y condición inicial</h3>
+              <h3 data-tooltip="Define el intervalo de tiempo [t₀, t_f] y el valor inicial y₀ de la solución" title="">Intervalo y condición inicial</h3>
               <div class="input-row">
                 <label class="control-label">
-                  <span>\(t_0\)</span>
+                  <span data-tooltip="Tiempo inicial del intervalo de solución" title="">\(t_0\)</span>
                   <input type="number" id="t0" step="any" class="control-input" />
                 </label>
                 <label class="control-label">
-                  <span>\(t_f\)</span>
+                  <span data-tooltip="Tiempo final del intervalo de solución" title="">\(t_f\)</span>
                   <input type="number" id="tf" step="any" class="control-input" />
                 </label>
                 <label class="control-label">
-                  <span>\(y_0\)</span>
+                  <span data-tooltip="Valor inicial de la función solución y(t) en t₀" title="">\(y_0\)</span>
                   <input type="number" id="y0" step="any" class="control-input" />
                 </label>
               </div>
             </div>
 
             <div class="control-group">
-              <h3>Tamaño de paso</h3>
+              <h3 data-tooltip="Controla la precisión de la aproximación: valores menores de h dan mayor precisión pero más cálculos" title="">Tamaño de paso</h3>
               <label class="control-label">
                 <span>h = <span id="hVal" class="value-badge">0.1</span></span>
                 <input type="range" id="hRange" min="0.01" max="1" step="0.01" class="slider" />
@@ -284,7 +284,7 @@
             </div>
 
             <div class="control-group">
-              <h3>Animación</h3>
+              <h3 data-tooltip="Anima la construcción paso a paso de las soluciones numéricas para visualizar cómo se aproximan las curvas" title="">Animación</h3>
               <div class="button-group">
                 <button id="animPlay" class="btn btn-small">▶ Play</button>
                 <button id="animPause" class="btn btn-small">⏸ Pausa</button>
@@ -317,22 +317,22 @@
 
             <!-- Métricas: columna derecha -->
             <div class="result-section metrics">
-              <h2>Métricas de Error</h2>
+              <h2 data-tooltip="Medidas de precisión comparando las soluciones numéricas con la solución exacta" title="">Métricas de Error</h2>
               <div class="metrics-grid">
                 <div class="metric-card euler">
-                  <div class="metric-label">Euler - Max</div>
+                  <div class="metric-label" data-tooltip="Error máximo absoluto del método de Euler: el mayor desvío entre la solución numérica y la exacta" title="">Euler - Max</div>
                   <div class="metric-value" id="eulerMax">—</div>
                 </div>
                 <div class="metric-card euler">
-                  <div class="metric-label">Euler - RMS</div>
+                  <div class="metric-label" data-tooltip="Error cuadrático medio (RMS) de Euler: raíz cuadrada del promedio de los errores al cuadrado" title="">Euler - RMS</div>
                   <div class="metric-value" id="eulerRms">—</div>
                 </div>
                 <div class="metric-card rk2">
-                  <div class="metric-label">RK2 - Max</div>
+                  <div class="metric-label" data-tooltip="Error máximo absoluto del método RK2: el mayor desvío entre la solución numérica y la exacta" title="">RK2 - Max</div>
                   <div class="metric-value" id="rk2Max">—</div>
                 </div>
                 <div class="metric-card rk2">
-                  <div class="metric-label">RK2 - RMS</div>
+                  <div class="metric-label" data-tooltip="Error cuadrático medio (RMS) de RK2: raíz cuadrada del promedio de los errores al cuadrado" title="">RK2 - RMS</div>
                   <div class="metric-value" id="rk2Rms">—</div>
                 </div>
               </div>
@@ -340,23 +340,23 @@
 
             <!-- Coste: 2 columnas abajo -->
             <div class="result-section cost">
-              <h2>Coste Computacional</h2>
+              <h2 data-tooltip="Medición del trabajo computacional requerido por cada método numérico" title="">Coste Computacional</h2>
               <div class="cost-grid">
                 <div class="cost-card">
-                  <div class="cost-label">Número de pasos</div>
+                  <div class="cost-label" data-tooltip="Cantidad total de pasos discretos usados para aproximar la solución en el intervalo [t₀, t_f]" title="">Número de pasos</div>
                   <div class="cost-value" id="costSteps">—</div>
                 </div>
                 <div class="cost-card">
-                  <div class="cost-label">Evaluaciones f - Euler</div>
+                  <div class="cost-label" data-tooltip="Total de evaluaciones de la función f(t,y) realizadas por el método de Euler: 1 evaluación por paso" title="">Evaluaciones f - Euler</div>
                   <div class="cost-value" id="costEuler">—</div>
                 </div>
                 <div class="cost-card">
-                  <div class="cost-label">Evaluaciones f - RK2</div>
+                  <div class="cost-label" data-tooltip="Total de evaluaciones de la función f(t,y) realizadas por el método RK2: 2 evaluaciones por paso (k₁ y k₂)" title="">Evaluaciones f - RK2</div>
                   <div class="cost-value" id="costRK2">—</div>
                   <div class="cost-note">×2 por paso</div>
                 </div>
               </div>
-              <p class="info-text" id="stepsInfo"></p>
+              <p class="info-text" id="stepsInfo" data-tooltip="Resumen: número de pasos discretos y tamaño de paso efectivo ajustado para cubrir exactamente el intervalo" title=""></p>
             </div>
           </div>
         </div>

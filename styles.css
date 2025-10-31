@@ -374,6 +374,8 @@ body {
 .lab-controls h2 {
   font-size: 16px;
   margin-bottom: 16px;
+  cursor: help;
+  position: relative;
 }
 
 .lab-controls h3 {
@@ -382,6 +384,139 @@ body {
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin: 16px 0 10px;
+  cursor: help;
+  position: relative;
+}
+
+.lab-controls h2,
+.lab-controls h3,
+.lab-controls .control-label > span[data-tooltip] {
+  cursor: help;
+}
+
+/* Tooltip personalizado para títulos de configuración */
+.lab-controls h2[data-tooltip]:hover::after,
+.lab-controls h3[data-tooltip]:hover::after,
+.lab-controls .control-label > span[data-tooltip]:hover::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-bottom: 8px;
+  padding: 8px 12px;
+  background: rgba(10, 14, 18, 0.98);
+  color: var(--text-light);
+  font-size: 12px;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: normal;
+  white-space: nowrap;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  pointer-events: none;
+  z-index: 1000;
+  max-width: 280px;
+  white-space: normal;
+  text-align: left;
+  line-height: 1.4;
+}
+
+.lab-controls .control-label > span[data-tooltip] {
+  position: relative;
+  display: inline-block;
+}
+
+.lab-controls .control-label > span[data-tooltip]:hover::after {
+  white-space: normal;
+  max-width: 260px;
+}
+
+
+/* Tooltips para secciones de resultados */
+.result-section h2[data-tooltip]:hover::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 8px;
+  padding: 8px 12px;
+  background: rgba(10, 14, 18, 0.98);
+  color: var(--text-light);
+  font-size: 12px;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: normal;
+  white-space: normal;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  pointer-events: none;
+  z-index: 10000;
+  max-width: 280px;
+  min-width: 200px;
+  text-align: left;
+  line-height: 1.4;
+  transform: none;
+}
+
+.metric-card,
+.cost-card {
+  overflow: visible;
+}
+
+.metric-label[data-tooltip]:hover::after,
+.cost-label[data-tooltip]:hover::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 8px;
+  padding: 8px 12px;
+  background: rgba(10, 14, 18, 0.98);
+  color: var(--text-light);
+  font-size: 12px;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: normal;
+  white-space: normal;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  pointer-events: none;
+  z-index: 10000;
+  max-width: 280px;
+  min-width: 200px;
+  text-align: left;
+  line-height: 1.4;
+}
+
+.info-text[data-tooltip]:hover::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 8px;
+  padding: 8px 12px;
+  background: rgba(10, 14, 18, 0.98);
+  color: var(--text-light);
+  font-size: 12px;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: normal;
+  white-space: normal;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  pointer-events: none;
+  z-index: 10000;
+  max-width: 280px;
+  min-width: 200px;
+  text-align: left;
+  line-height: 1.4;
 }
 
 .control-group {
@@ -578,7 +713,7 @@ textarea:focus {
   display: flex;
   flex-direction: column;
   min-height: 0;
-  overflow: hidden;
+  overflow: visible;
 }
 
 /* Layout Bento: Gráfica principal ocupa 2 columnas */
@@ -610,6 +745,8 @@ textarea:focus {
   margin-bottom: 8px;
   flex-shrink: 0;
   font-weight: 600;
+  cursor: help;
+  position: relative;
 }
 
 .result-header {
@@ -699,6 +836,8 @@ textarea:focus {
   line-height: 1.2;
   text-transform: uppercase;
   letter-spacing: 0.03em;
+  cursor: help;
+  position: relative;
 }
 
 .metric-value {
@@ -728,6 +867,13 @@ textarea:focus {
   color: var(--text-muted);
   margin-bottom: 4px;
   line-height: 1.2;
+  cursor: help;
+  position: relative;
+}
+
+.info-text[title] {
+  cursor: help;
+  position: relative;
 }
 
 .cost-value {
