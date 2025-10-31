@@ -356,6 +356,7 @@ body {
   margin-top: 0;
   margin-bottom: 40px;
   max-height: calc(100vh - 120px);
+  align-items: stretch;
 }
 
 .lab-controls {
@@ -363,12 +364,11 @@ body {
   border: 1px solid var(--border);
   border-radius: 14px;
   padding: 18px;
-  height: fit-content;
+  height: 100%;
   max-height: calc(100vh - 120px);
   overflow-y: auto;
-  position: sticky;
-  top: 80px;
-  align-self: start;
+  display: flex;
+  flex-direction: column;
 }
 
 .lab-controls h2 {
@@ -703,6 +703,7 @@ textarea:focus {
   grid-template-rows: minmax(300px, 46vh) minmax(150px, 1fr) minmax(120px, auto);
   gap: 12px;
   max-height: calc(100vh - 120px);
+  height: 100%;
 }
 
 .result-section {
