@@ -123,8 +123,8 @@
       const tk = t0 + k * h;
       const yk = y[y.length - 1];
       const k1 = f(tk, yk);
-      const k2 = f(tk + h, yk + h * k1);
-      const yNext = yk + (h / 2) * (k1 + k2);
+      const k2 = f(tk + h / 2, yk + (h / 2) * k1);
+      const yNext = yk + h * k2;
       t.push(tk + h);
       y.push(yNext);
     }
