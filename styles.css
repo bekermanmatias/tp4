@@ -693,10 +693,21 @@ textarea:focus {
   background: #0b0f13;
   border: 1px solid var(--border);
   border-radius: 8px;
-  padding: 12px;
+  padding: 14px;
   margin-top: 10px;
   font-size: 13px;
   color: var(--text-muted);
+  line-height: 1.8;
+}
+
+.pvi-info strong {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.pvi-info .katex {
+  color: var(--text-light);
+  font-size: 1.05em;
 }
 
 /* RESULTADOS - BENTO GRID */

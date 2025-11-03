@@ -9,7 +9,7 @@
       f: (t, y) => y,
       exact: (t, { y0, t0 }) => y0 * Math.exp(t - t0),
       defaults: { t0: 0, tf: 2, y0: 1, h: 0.2 },
-      desc: 'Crecimiento exponencial: solución exacta y(t) = y0 e^t.'
+      desc: 'Crecimiento exponencial.<br><strong>Ecuación:</strong> \\(y\' = y\\)<br><strong>Solución exacta:</strong> \\(y(t) = y_0 e^{t-t_0}\\)'
     },
     {
       id: 'decay',
@@ -17,7 +17,7 @@
       f: (t, y) => -2 * y,
       exact: (t, { y0, t0 }) => y0 * Math.exp(-2 * (t - t0)),
       defaults: { t0: 0, tf: 2, y0: 1, h: 0.2 },
-      desc: 'Decaimiento exponencial: solución y(t) = y0 e^{-2t}.'
+      desc: 'Decaimiento exponencial.<br><strong>Ecuación:</strong> \\(y\' = -2y\\)<br><strong>Solución exacta:</strong> \\(y(t) = y_0 e^{-2(t-t_0)}\\)'
     },
     {
       id: 't_plus_y',
@@ -30,7 +30,7 @@
         return -t - 1 + C * Math.exp(t);
       },
       defaults: { t0: 0, tf: 2, y0: 1, h: 0.2 },
-      desc: 'Ecuación lineal no homogénea: y' + " = t + y; exacta y = -t - 1 + (y0+1)e^t."
+      desc: 'Ecuación lineal no homogénea.<br><strong>Ecuación:</strong> \\(y\' = t + y\\)<br><strong>Solución exacta:</strong> \\(y(t) = -t - 1 + (y_0 + t_0 + 1)e^{t-t_0}\\)'
     },
     {
       id: 'sin_forced',
@@ -46,7 +46,7 @@
         return 0.5 * (Math.sin(t) - Math.cos(t)) + C * Math.exp(t);
       },
       defaults: { t0: 0, tf: 6.28318, y0: 0, h: 0.1 },
-      desc: 'Ecuación con forzamiento sinusoidal: solución exacta disponible.'
+      desc: 'Ecuación con forzamiento sinusoidal.<br><strong>Ecuación:</strong> \\(y\' = -\\sin(t) + y\\)<br><strong>Solución exacta:</strong> \\(y(t) = \\frac{1}{2}(\\sin t - \\cos t) + Ce^t\\)'
     },
     {
       id: 'logistic',
@@ -58,7 +58,7 @@
         return 1 / (1 + A * Math.exp(-(t - t0)));
       },
       defaults: { t0: 0, tf: 10, y0: 0.2, h: 0.2 },
-      desc: 'Crecimiento logístico: solución exacta cerrada.'
+      desc: 'Crecimiento logístico.<br><strong>Ecuación:</strong> \\(y\' = y(1-y)\\)<br><strong>Solución exacta:</strong> \\(y(t) = \\frac{1}{1 + Ae^{-(t-t_0)}}\\) donde \\(A = \\frac{1-y_0}{y_0}\\)'
     },
     {
       id: 'poly2t',
@@ -66,7 +66,7 @@
       f: (t, y) => 2 * t,
       exact: (t, { y0, t0 }) => y0 + (t - t0) * (t + t0), // y = y0 + t^2 - t0^2
       defaults: { t0: 0, tf: 5, y0: 0, h: 0.2 },
-      desc: 'Campo simple: solución polinómica y(t) = y0 + t^2 - t0^2.'
+      desc: 'Campo simple polinómico.<br><strong>Ecuación:</strong> \\(y\' = 2t\\)<br><strong>Solución exacta:</strong> \\(y(t) = y_0 + t^2 - t_0^2\\)'
     },
     {
       id: 'ysq',
@@ -74,7 +74,7 @@
       f: (t, y) => y * y,
       exact: (t, { y0, t0 }) => y0 / (1 - y0 * (t - t0)),
       defaults: { t0: 0, tf: 1.5, y0: 0.5, h: 0.05 },
-      desc: 'No lineal con posible blow-up: y(t) = y0 / (1 - y0(t - t0)).'
+      desc: 'No lineal con posible blow-up.<br><strong>Ecuación:</strong> \\(y\' = y^2\\)<br><strong>Solución exacta:</strong> \\(y(t) = \\frac{y_0}{1 - y_0(t-t_0)}\\)'
     },
     {
       id: 'lin_3y_2t',
@@ -86,7 +86,7 @@
         return C * Math.exp(3 * t) - (2 / 3) * t - 2 / 9;
       },
       defaults: { t0: 0, tf: 2, y0: 1, h: 0.1 },
-      desc: 'Lineal con término en t: particular polinómica, exacta cerrada.'
+      desc: 'Lineal con término en t.<br><strong>Ecuación:</strong> \\(y\' = 3y + 2t\\)<br><strong>Solución exacta:</strong> \\(y(t) = Ce^{3t} - \\frac{2}{3}t - \\frac{2}{9}\\)'
     },
     {
       id: 'cos_minus_y',
@@ -98,7 +98,7 @@
         return 0.5 * (Math.sin(t) + Math.cos(t)) + C * Math.exp(-t);
       },
       defaults: { t0: 0, tf: 6.28318, y0: 0, h: 0.1 },
-      desc: 'Lineal estable con forzamiento cosenoidal y decaimiento exponencial.'
+      desc: 'Lineal estable con forzamiento cosenoidal.<br><strong>Ecuación:</strong> \\(y\' = \\cos(t) - y\\)<br><strong>Solución exacta:</strong> \\(y(t) = \\frac{1}{2}(\\sin t + \\cos t) + Ce^{-t}\\)'
     }
   ];
 
@@ -166,7 +166,7 @@
   let animTimer = null;
   let animIdx = 0;
   let animData = null; // {t, eulerY, rk2Y, exactY, n, h}
-  let animSpeed = 1; // 1x por defecto
+  let animSpeed = 0.25; // 0.25x por defecto (velocidad mínima)
 
   function initPviSelect() {
     const sel = $('pviSelect');
@@ -189,7 +189,7 @@
     $('tf').value = pvi.defaults.tf;
     $('y0').value = pvi.defaults.y0;
     $('hRange').value = pvi.defaults.h;
-    $('pviDesc').textContent = pvi.desc;
+    $('pviDesc').innerHTML = pvi.desc;
     syncNumberFromRange();
     renderMath();
   }
@@ -517,7 +517,6 @@
     $('hRange').addEventListener('input', () => { syncNumberFromRange(); run(); });
     $('customExpr').addEventListener('input', () => { if (getSelectedPvi().id === 'custom') run(); });
     $('customExact').addEventListener('input', () => { if (getSelectedPvi().id === 'custom') run(); });
-    $('runBtn').addEventListener('click', run);
     $('resetBtn').addEventListener('click', reset);
 
     $('animPlay').addEventListener('click', () => { startAnimation(); });
