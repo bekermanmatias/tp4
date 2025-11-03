@@ -1041,6 +1041,7 @@ textarea:focus {
 .cases-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
+  grid-auto-rows: 1fr;
   gap: 24px;
   margin: 40px 0;
   max-width: 1200px;
@@ -1057,6 +1058,10 @@ textarea:focus {
   cursor: pointer;
   position: relative;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 280px;
+  height: 100%;
 }
 
 .case-card::before {
@@ -1130,12 +1135,14 @@ textarea:focus {
   color: var(--text-muted);
   line-height: 1.6;
   margin-bottom: 20px;
+  flex-grow: 1;
 }
 
 .case-options {
   display: flex;
   gap: 10px;
-  margin-top: 16px;
+  margin-top: auto;
+  padding-top: 16px;
 }
 
 .case-option {
@@ -1183,6 +1190,7 @@ textarea:focus {
   font-size: 13px;
   line-height: 1.5;
   display: none;
+  flex-shrink: 0;
 }
 
 .case-feedback.show {
