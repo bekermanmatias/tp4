@@ -94,9 +94,12 @@ body {
 
 /* HERO */
 .hero {
-  padding: 60px 0 50px;
+  padding: clamp(40px, 8vh, 80px) 0 clamp(40px, 6vh, 60px);
   background: linear-gradient(180deg, rgba(122,224,195,0.08), rgba(11,13,16,0));
+  background-size: 100% 100%;
+  background-attachment: scroll;
   border-bottom: 1px solid var(--border);
+  min-height: min-content;
 }
 
 .hero h1 {
@@ -1034,6 +1037,203 @@ textarea:focus {
   margin: 12px auto;
 }
 
+/* CASOS REALES INTERACTIVOS */
+.cases-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin: 40px 0;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.case-card {
+  background: var(--panel);
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.case-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--primary);
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.case-card:hover {
+  border-color: var(--primary);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(106, 164, 255, 0.2);
+}
+
+.case-card:hover::before {
+  transform: scaleX(1);
+}
+
+.case-card.selected {
+  border-color: var(--primary);
+  background: rgba(106, 164, 255, 0.1);
+}
+
+.case-card.selected::before {
+  transform: scaleX(1);
+}
+
+.case-card.correct {
+  border-color: var(--success);
+  background: rgba(122, 224, 195, 0.15);
+}
+
+.case-card.correct::before {
+  background: var(--success);
+  transform: scaleX(1);
+}
+
+.case-card.incorrect {
+  border-color: var(--danger);
+  background: rgba(255, 138, 138, 0.15);
+}
+
+.case-card.incorrect::before {
+  background: var(--danger);
+  transform: scaleX(1);
+}
+
+.case-icon {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 16px;
+  color: var(--primary);
+  flex-shrink: 0;
+}
+
+.case-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: var(--text-light);
+}
+
+.case-description {
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.case-options {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.case-option {
+  flex: 1;
+  padding: 12px 16px;
+  background: rgba(106, 164, 255, 0.1);
+  border: 2px solid transparent;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: var(--text-light);
+}
+
+.case-option:hover {
+  background: rgba(106, 164, 255, 0.2);
+  border-color: var(--primary);
+}
+
+.case-option.selected {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: white;
+}
+
+.case-option.correct-answer {
+  background: var(--success);
+  border-color: var(--success);
+  color: white;
+}
+
+.case-option.wrong-answer {
+  background: var(--danger);
+  border-color: var(--danger);
+  color: white;
+  opacity: 0.7;
+}
+
+.case-feedback {
+  margin-top: 16px;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  line-height: 1.5;
+  display: none;
+}
+
+.case-feedback.show {
+  display: block;
+}
+
+.case-feedback.correct {
+  background: rgba(122, 224, 195, 0.2);
+  border-left: 4px solid var(--success);
+  color: var(--text-light);
+}
+
+.case-feedback.incorrect {
+  background: rgba(255, 138, 138, 0.2);
+  border-left: 4px solid var(--danger);
+  color: var(--text-light);
+}
+
+.cases-score {
+  margin: 40px auto;
+  max-width: 400px;
+}
+
+.score-card {
+  background: var(--panel);
+  border: 2px solid var(--primary);
+  border-radius: 16px;
+  padding: 32px;
+  text-align: center;
+}
+
+.score-card h3 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: var(--text-light);
+}
+
+.score-value {
+  font-size: 48px;
+  font-weight: 700;
+  color: var(--primary);
+  margin: 20px 0;
+}
+
+.score-text {
+  font-size: 16px;
+  color: var(--text-muted);
+  margin: 20px 0;
+  line-height: 1.6;
+}
+
 /* FOOTER */
 .footer {
   background: var(--bg-dark);
@@ -1100,6 +1300,10 @@ textarea:focus {
   .comparison-table .table-row {
     grid-template-columns: 150px 1fr 1fr;
   }
+  
+  .cases-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 @media (max-width: 768px) {
@@ -1132,6 +1336,14 @@ textarea:focus {
   .comparison-table .table-row {
     grid-template-columns: 120px 1fr 1fr;
     font-size: 13px;
+  }
+  
+  .cases-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .case-options {
+    flex-direction: column;
   }
 }
 

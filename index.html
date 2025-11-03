@@ -18,48 +18,41 @@
     <div class="container nav">
       <div class="brand">Euler vs RK2</div>
       <nav class="menu" aria-label="Secciones">
-        <a href="#problema">El Problema</a>
+        <a href="#problema">Problema</a>
         <a href="#euler">Euler</a>
         <a href="#rk2">RK2</a>
         <a href="#laboratorio">Laboratorio</a>
         <a href="#conclusiones">Conclusiones</a>
+        <a href="#casos-reales">Casos Reales</a>
       </nav>
     </div>
   </header>
 
   <main>
-    <!-- SECCIÓN 1: EL PROBLEMA -->
+    <!-- SECCIÓN 1: PROBLEMA -->
     <section id="problema" class="hero">
       <div class="container">
-        <h1>¿Qué es un Problema de Valor Inicial?</h1>
+        <h1>Problema a Resolver</h1>
+        
         <div class="content-block">
-          <p class="lead">Un <strong>Problema de Valor Inicial (PVI)</strong> consiste en encontrar una función \(y(t)\) que satisface:</p>
+          <h2>¿Qué es un Problema de Valor Inicial (PVI)?</h2>
+          <p class="lead">Buscamos resolver una <strong>Ecuación Diferencial Ordinaria (EDO)</strong> de la forma:</p>
           <div class="formula-box">
-            \[ y'(t) = f(t, y) \quad \text{con} \quad y(t_0) = y_0 \]
+            \[ y'(t) = f(t, y) \quad \text{con condición inicial} \quad y(t_0) = y_0 \]
           </div>
-          <p>Es decir, conocemos la <em>derivada</em> de \(y\) en cada punto y queremos encontrar la función \(y(t)\) completa.</p>
-        </div>
-
-        <div class="example-box">
-          <h3>Ejemplo simple</h3>
-          <p>Si \(y' = y\) con \(y(0) = 1\), la solución exacta es \(y(t) = e^t\).</p>
-          <p class="muted">Pero muchos PVI no tienen solución exacta conocida, ¡por eso necesitamos métodos numéricos!</p>
+          <p>Es decir, conocemos la <em>derivada</em> de \(y\) en cada punto, y queremos encontrar la función \(y(t)\) completa.</p>
         </div>
 
         <div class="two-cols">
           <div class="info-card">
-            <h3>¿Por qué son importantes?</h3>
-            <ul>
-              <li>Modelan crecimiento poblacional</li>
-              <li>Describen movimiento de objetos</li>
-              <li>Predicen reacciones químicas</li>
-              <li>Simulan sistemas eléctricos</li>
-            </ul>
+            <h3>¿Por qué métodos numéricos?</h3>
+            <p>Muchas EDOs <strong>no tienen solución analítica</strong> (no se pueden "despejar" con fórmulas exactas).</p>
+            <p>Los métodos numéricos nos permiten <em>aproximar</em> la solución paso a paso, avanzando con un tamaño de paso \(h\) pequeño.</p>
           </div>
           <div class="info-card">
-            <h3>El desafío</h3>
-            <p>Solo conocemos el punto inicial \((t_0, y_0)\) y la regla \(f(t,y)\) que nos dice cómo crece.</p>
-            <p><strong>Solución:</strong> Avanzar paso a paso con \(h\) pequeño, aproximando la curva.</p>
+            <h3>Comparación</h3>
+            <p><strong>Euler:</strong> El método más simple y directo. Es el "padre" de todos los métodos de paso.</p>
+            <p><strong>RK2:</strong> La primera gran mejora en precisión. Usa información del punto medio del intervalo.</p>
           </div>
         </div>
       </div>
@@ -397,7 +390,7 @@
             <ul>
               <li>Estás aprendiendo métodos numéricos</li>
               <li>Necesitas un prototipo rápido</li>
-              <li>El problema es muy simple</li>
+              <li>Problema es muy simple</li>
               <li>La precisión no es crítica</li>
             </ul>
           </div>
@@ -422,6 +415,29 @@
           </div>
           <p>RK2 requiere el doble de evaluaciones por paso, pero su error es \(\mathcal{O}(h^2)\) en vez de \(\mathcal{O}(h)\).</p>
           <p><strong>En la práctica:</strong> Para lograr la misma precisión, RK2 necesita menos pasos totales que Euler, ¡compensando el coste extra por paso!</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN 6: CASOS REALES INTERACTIVOS -->
+    <section id="casos-reales" class="section-dark">
+      <div class="container">
+        <h1>¿Qué método usarías en la vida real?</h1>
+        <p class="subtitle">Elige el método más apropiado para cada situación. ¡Pon a prueba tu conocimiento!</p>
+
+        <div class="cases-grid" id="casesGrid">
+          <!-- Los casos se cargarán dinámicamente -->
+        </div>
+
+        <div class="cases-score" id="casesScore" style="display: none;">
+          <div class="score-card">
+            <h3>Resultado</h3>
+            <div class="score-value">
+              <span id="scoreCorrect">0</span> / <span id="scoreTotal">0</span>
+            </div>
+            <p class="score-text" id="scoreText"></p>
+            <button id="resetCases" class="btn btn-primary">Intentar de nuevo</button>
+          </div>
         </div>
       </div>
     </section>

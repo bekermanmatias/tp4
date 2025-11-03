@@ -607,6 +607,230 @@
   }
 
   window.addEventListener('scroll', onScroll, { passive: true });
+
+  // CASOS REALES INTERACTIVOS
+  const REAL_WORLD_CASES = [
+    {
+      id: 'redes',
+      title: 'Simulación de Tráfico de Red',
+      description: 'Necesitas simular el tráfico de red en tiempo real para un sistema de monitoreo. Requieres alta precisión para detectar anomalías y evitar falsos positivos.',
+      correct: 'rk2',
+      icon: '🌐',
+      feedback: {
+        correct: '✓ Correcto. En sistemas de red críticos, RK2 ofrece la precisión necesaria para detectar patrones anómalos sin falsos positivos que sobrecarguen el sistema.',
+        incorrect: '✗ Incorrecto. Los sistemas de red requieren precisión para evitar falsas alarmas. RK2 es necesario aquí.'
+      }
+    },
+    {
+      id: 'prototipo',
+      title: 'Prototipo de Algoritmo',
+      description: 'Estás desarrollando un prototipo de algoritmo de optimización. Necesitas validar rápidamente la idea antes de implementar la versión final.',
+      correct: 'euler',
+      icon: '💻',
+      feedback: {
+        correct: '✓ Correcto. En prototipos de software, la simplicidad y velocidad de Euler permiten validar ideas rápidamente. La optimización final puede usar métodos más precisos.',
+        incorrect: '✗ Incorrecto. Para prototipos rápidos en software, Euler es más apropiado por su menor complejidad y velocidad de implementación.'
+      }
+    },
+    {
+      id: 'distribuido',
+      title: 'Sistema Distribuido con Consenso',
+      description: 'Simulando el comportamiento de un sistema distribuido que requiere consenso (blockchain, bases de datos distribuidas). La precisión es crítica para la consistencia.',
+      correct: 'rk2',
+      icon: '🔗',
+      feedback: {
+        correct: '✓ Correcto. En sistemas distribuidos, la precisión es esencial para garantizar consistencia y evitar estados inconsistentes. RK2 previene errores acumulados.',
+        incorrect: '✗ Incorrecto. Los sistemas distribuidos requieren alta precisión para mantener consistencia. RK2 es esencial para evitar errores en cascada.'
+      }
+    },
+    {
+      id: 'game',
+      title: 'Motor de Física para Videojuego',
+      description: 'Desarrollando un motor de física básico para un videojuego indie. Necesitas cálculos rápidos que se ejecuten a 60 FPS sin afectar el rendimiento.',
+      correct: 'euler',
+      icon: '🎮',
+      feedback: {
+        correct: '✓ Correcto. En videojuegos, el rendimiento en tiempo real es prioritario. Euler es suficiente para física básica y mantiene alto FPS.',
+        incorrect: '✗ Incorrecto. Para motores de física en tiempo real, Euler es preferible por su bajo coste computacional, permitiendo altos FPS.'
+      }
+    },
+    {
+      id: 'ml',
+      title: 'Entrenamiento de Modelo de Machine Learning',
+      description: 'Simulando la dinámica de optimización durante el entrenamiento de una red neuronal. Necesitas precisión para converger correctamente.',
+      correct: 'rk2',
+      icon: '🤖',
+      feedback: {
+        correct: '✓ Correcto. En entrenamiento de ML, RK2 proporciona la precisión necesaria para convergencia estable y evitar oscilaciones en el gradiente.',
+        incorrect: '✗ Incorrecto. El entrenamiento de ML requiere precisión para convergencia estable. RK2 evita errores que pueden afectar el aprendizaje.'
+      }
+    },
+    {
+      id: 'scheduler',
+      title: 'Planificador de Tareas del SO',
+      description: 'Prototipando un algoritmo de planificación de procesos para un sistema operativo. Necesitas resultados rápidos para iterar y probar diferentes políticas.',
+      correct: 'euler',
+      icon: '⚙️',
+      feedback: {
+        correct: '✓ Correcto. En desarrollo de sistemas operativos, los prototipos requieren rapidez. Euler permite iterar rápidamente sobre diferentes políticas de scheduling.',
+        incorrect: '✗ Incorrecto. Para prototipos de sistemas operativos donde se itera frecuentemente, Euler es más eficiente para desarrollo rápido.'
+      }
+    }
+  ];
+
+  function renderRealWorldCases() {
+    const grid = document.getElementById('casesGrid');
+    if (!grid) return;
+
+    grid.innerHTML = '';
+
+    REAL_WORLD_CASES.forEach((caseData, index) => {
+      const card = document.createElement('div');
+      card.className = 'case-card';
+      card.dataset.caseId = caseData.id;
+      card.dataset.correct = caseData.correct;
+
+      card.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+          <span style="font-size: 32px;">${caseData.icon}</span>
+          <h3 class="case-title">${caseData.title}</h3>
+        </div>
+        <p class="case-description">${caseData.description}</p>
+        <div class="case-options">
+          <button class="case-option" data-option="euler" data-case-id="${caseData.id}">Euler</button>
+          <button class="case-option" data-option="rk2" data-case-id="${caseData.id}">RK2</button>
+        </div>
+        <div class="case-feedback" id="feedback-${caseData.id}"></div>
+      `;
+
+      grid.appendChild(card);
+    });
+
+    // Agregar event listeners a los botones
+    document.querySelectorAll('.case-option').forEach(btn => {
+      btn.addEventListener('click', handleCaseSelection);
+    });
+  }
+
+  function handleCaseSelection(e) {
+    const btn = e.target;
+    const caseId = btn.dataset.caseId;
+    const selectedOption = btn.dataset.option;
+    const card = document.querySelector(`[data-case-id="${caseId}"]`);
+    const correctAnswer = card.dataset.correct;
+    const caseData = REAL_WORLD_CASES.find(c => c.id === caseId);
+    
+    if (!card || !caseData) return;
+
+    // Deshabilitar todas las opciones de esta tarjeta
+    card.querySelectorAll('.case-option').forEach(opt => {
+      opt.style.pointerEvents = 'none';
+    });
+
+    // Marcar selección
+    btn.classList.add('selected');
+
+    // Verificar respuesta
+    const isCorrect = selectedOption === correctAnswer;
+    
+    if (isCorrect) {
+      card.classList.add('correct');
+      btn.classList.add('correct-answer');
+      showFeedback(caseId, caseData.feedback.correct, true);
+    } else {
+      card.classList.add('incorrect');
+      btn.classList.add('wrong-answer');
+      // Mostrar la respuesta correcta
+      const correctBtn = card.querySelector(`[data-option="${correctAnswer}"]`);
+      if (correctBtn) {
+        correctBtn.classList.add('correct-answer');
+      }
+      showFeedback(caseId, caseData.feedback.incorrect, false);
+    }
+
+    // Actualizar puntuación
+    updateScore();
+  }
+
+  function showFeedback(caseId, message, isCorrect) {
+    const feedbackEl = document.getElementById(`feedback-${caseId}`);
+    if (!feedbackEl) return;
+    
+    feedbackEl.textContent = message;
+    feedbackEl.className = `case-feedback show ${isCorrect ? 'correct' : 'incorrect'}`;
+  }
+
+  function updateScore() {
+    const cards = document.querySelectorAll('.case-card');
+    let total = cards.length;
+    let correct = 0;
+    let answered = 0;
+
+    cards.forEach(card => {
+      if (card.classList.contains('correct')) {
+        correct++;
+        answered++;
+      } else if (card.classList.contains('incorrect')) {
+        answered++;
+      }
+    });
+
+    const scoreEl = document.getElementById('casesScore');
+    if (!scoreEl) return;
+
+    // Mostrar puntuación cuando todos los casos han sido respondidos
+    if (answered === total && total > 0) {
+      scoreEl.style.display = 'block';
+      document.getElementById('scoreCorrect').textContent = correct;
+      document.getElementById('scoreTotal').textContent = total;
+      
+      const scoreText = document.getElementById('scoreText');
+      const percentage = Math.round((correct / total) * 100);
+      
+      if (percentage === 100) {
+        scoreText.textContent = '¡Perfecto! Dominas completamente cuándo usar cada método.';
+      } else if (percentage >= 75) {
+        scoreText.textContent = '¡Muy bien! Entiendes bien las diferencias entre los métodos.';
+      } else if (percentage >= 50) {
+        scoreText.textContent = 'Bien, pero puedes mejorar. Revisa las ventajas y desventajas de cada método.';
+      } else {
+        scoreText.textContent = 'Sigue practicando. Recuerda: Euler para rapidez, RK2 para precisión.';
+      }
+
+      // Scroll suave a la puntuación
+      setTimeout(() => {
+        scoreEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 300);
+    }
+  }
+
+  function resetCases() {
+    const grid = document.getElementById('casesGrid');
+    const scoreEl = document.getElementById('casesScore');
+    
+    if (scoreEl) scoreEl.style.display = 'none';
+    
+    if (grid) {
+      renderRealWorldCases();
+    }
+  }
+
+  // Inicializar casos cuando el DOM esté listo
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      setTimeout(renderRealWorldCases, 100);
+    });
+  } else {
+    setTimeout(renderRealWorldCases, 100);
+  }
+
+  // Botón de reset
+  document.addEventListener('DOMContentLoaded', () => {
+    const resetBtn = document.getElementById('resetCases');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', resetCases);
+    }
+  });
 })();
 
 
